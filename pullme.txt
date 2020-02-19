@@ -1,2 +1,6 @@
 print("Hello")
+<<<<<<< HEAD
 This was add on rpi
+=======
+This was add on github.
+>>>>>>> 78fb27fe0acd2a25e06f53321c178396c3b92dd0
