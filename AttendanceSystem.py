@@ -76,10 +76,11 @@ def insertAttandance(mycursor):
     print("Place the card")
     id, text = reader.read()
     print(id)
-    sql = "SELECT * FROM student_info WHERE ID = %s "
+    sql = "SELECT FirstName FROM student_info WHERE ID = id"
+    mycursor.execute(sql, id)
+    FN = FirstName
+    print("FN")
     print("finish")
-    checkid = (ID)
-    mycursor.execute(sql,checkid)
     myresult = mycursor.fetchall()
     if len(myresult) < 1:
         msql = "INSERT INTO S_attendance (StudentID, ClassID, DateTime) VALUES(%s,%s,%s)"
@@ -88,7 +89,7 @@ def insertAttandance(mycursor):
         mydb.commit()
         print(mycursor.rowcount,"record added.")
     else :
-        print("You already Chack your Attendence")
+        print("You already Check your Attendence")
 
 
 
@@ -134,5 +135,4 @@ def scanStudent():
             print(x[0] + " : "+id)
             
 '''
-
-insertClassInfo(mycursor)
+insertAttandance(mycursor)
