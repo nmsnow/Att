@@ -14,6 +14,10 @@ mycursor = mydb.cursor()
 
 reader = SimpleMFRC522()
 
+from RPLCD.i2c import CharLCD
+lcd = CharLCD('PCF8574', 0x27)
+
+
 
 def createDatabase(mycursor):
     print("name of the db")
@@ -79,72 +83,34 @@ def insertAttandance(mycursor, StudentID, ClassID):
     print("Checked")
     mydb.commit()
     
+def findclassclub(mycursor):
+    print("Which class?")
+    classclub = input()
+    mycursor.fetchall()
+    classID = 0
+    for x in myresult:
+        ClassID = x[0]
+    return ClassID
+    
 def checkAttendance(mycursor):
     print("Scan your card")
-    lcd.write
-    
-    
-    
-    
-    
-    '''print("Place the card")
-    id, text = reader.read()
-    print(id)
-    sql = "SELECT * FROM student_info WHERE ID = id"
-    mycursor.execute(sql, id)
-    print("finish")
-    myresult = mycursor.fetchall()
-    if len(myresult) < 1:
-        msql = "INSERT INTO S_attendance (StudentID, ClassID, DateTime) VALUES(%s,%s,%s)"
-        valu = (StudentID, ClassID, DateTime)
-        mycursor.execute(msql, valu)
-        mydb.commit()
-        print(mycursor.rowcount,"record added.")
-    else :
-        print("You already Check your Attendence")'''
-
-
-
-'''
-def insertVerify(mycursor,name,brand,price,origin): #INSERT WITH NO ADDRESS AND NAME THE SAME AT THE SAME TIME
-    sql = "SELECT * FROM clothstore WHERE name = %s AND brand = %s"
-    nd = (name, brand)
-    mycursor.execute(sql,nd)
-    myresult = mycursor.fetchall()
-    if len(myresult) < 1:
-        msql = "INSERT INTO clothstore (name,brand,price,origin) VALUES(%s,%s,%s,%s)"
-        valu = (name, brand, price, origin)
-        mycursor.execute(msql, valu)
-        mydb.commit()
-        print(mycursor.rowcount,"record added.")
-    else :
-        print("You already have this item")
-  
-
-
-def addStudent(mycursor,fName,lName,nName):
-    space = ",' '"
-    id,name = reader.read()
-    q = "INSERT INTO students(id, firstname, lastname, nickname) VALUES(" + str(id) + ",'" + fName + "', '" + lName + "','" + nName + "')"
-    print(q)
-    mycursor.execute(q)
-    
-def showData(mycursor,table):
-    mycursor.execute("SELECT * FROM "+table)
-    
-    myresute = mycursor.fetchall()
-    
-    for x in myresult:
-        print(x)
-        
-def scanStudent():
-    id,name = reader.read_no_block
-    while True :
-        id,name = reader.read_no_block
-        mycursor.execute("SELECT * FROM scanproducts WHERE RFID = " + str(id))
-        myresult = mycursor.fetchall()
-        for x in myresult:
-            print(x[0] + " : "+id)
+    lcd.write_string("Scan your card\n\r")
+    ClassID = findClassClub()
+    while True:
+        id, name = read.read_no_block()
+        if id != None:
+            mycursor.execute("SELECT * From student_info WHERE id = " + str(id))
             
-'''
-insertAttandance(mycursor)
+            myresult = mycursor.fetchall()
+            
+            for x in myresult:
+                lcd.clear()
+                print(x[0]+ " : " + str(id))
+                lcd.write_string(x[0] + "\n\r" + x[2])
+                sleep(1)
+                print("\nScan Your card")
+                lcd.clear()
+                inputAttendance(mycursor, id, ClassID)
+    
+    
+checkAttendance(mycursor)
