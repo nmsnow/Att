@@ -72,7 +72,16 @@ def insertClassInfo(mycursor):
     print("finish")
     
 
-def insertAttandance(mycursor):
+def insertAttandance(mycursor, StudentID, ClassID):
+    Q = "insert into Attendance(StudentID, ClassID, DateTime) VALUES('" + str(StudentID) + "' , " + str(ClassID) + ", NOW())"
+    print(Q)
+    mycursor.execute(Q)
+    print("Checked")
+    mydb.commit()
+    
+def checkAttendance(mycursor):
+    print("Scan your card")
+    lcd.write
     
     
     
