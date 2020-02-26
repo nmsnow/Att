@@ -1,6 +1,8 @@
 import RPi.GPIO as GPIO
 from mfrc522 import SimpleMFRC522
 
+from time import sleep
+
 import mysql.connector
 
 mydb = mysql.connector.connect(
@@ -77,17 +79,18 @@ def insertClassInfo(mycursor):
     
 
 def insertAttandance(mycursor, StudentID, ClassID):
-    Q = "insert into Attendance(StudentID, ClassID, DateTime) VALUES('" + str(StudentID) + "' , " + str(ClassID) + ", NOW())"
+    Q = "INSERT INTO S_attendance(StudentID, ClassID, DateTime) VALUES('" + str(StudentID) + "' , " + str(ClassID) + ", NOW())"
     print(Q)
     mycursor.execute(Q)
     print("Checked")
     mydb.commit()
     
-def findclassclub(mycursor):
-    print("Which class?")
+def findClassClub(mycursor):
+    print("Which class? (ID)")
     classclub = input()
-    mycursor.fetchall()
-    classID = 0
+    mycursor.execute("SELECT ClassName FROM Classandclub WHERE ClassID = '" + classclub + "'")
+    myresult = mycursor.fetchall()
+    ClassID = 0
     for x in myresult:
         ClassID = x[0]
     return ClassID
@@ -95,11 +98,11 @@ def findclassclub(mycursor):
 def checkAttendance(mycursor):
     print("Scan your card")
     lcd.write_string("Scan your card\n\r")
-    ClassID = findClassClub()
+    ClassID = findClassClub(mycursor)
     while True:
-        id, name = read.read_no_block()
+        id, name = reader.read_no_block()
         if id != None:
-            mycursor.execute("SELECT * From student_info WHERE id = " + str(id))
+            mycursor.execute("SELECT * FROM student_info WHERE id = " + str(id))
             
             myresult = mycursor.fetchall()
             
@@ -110,7 +113,9 @@ def checkAttendance(mycursor):
                 sleep(1)
                 print("\nScan Your card")
                 lcd.clear()
-                inputAttendance(mycursor, id, ClassID)
+                insertAttandance(mycursor, StudentID, ClassID)
     
     
+#insertStudentInfo(mycursor)
+
 checkAttendance(mycursor)
